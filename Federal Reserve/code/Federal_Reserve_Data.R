@@ -20,10 +20,14 @@ library(scales)
 
 
 #devtools::install_github("jcizel/FredR")
+git_token <- "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"
+# Git token: https://gist.github.com/Z3tt/3dab3535007acf108391649766409421
 
-
+#FRED
 fredr_api_key <- "98868097bf8e12d9ad9f462ed9dc9aa6"
 fredr_set_key(fredr_api_key)
+
+
 
 #========================================
 #CPI Change
@@ -121,8 +125,9 @@ HrlyWages <- fredr(
   observation_end = as.Date("2022-03-31"),
   frequency = "m")
 
-HarlyWages2 <-HrlyWages %>% mutate(value_chg = percent((value/value[1])-1))
-
+HrlyWages2 <-HrlyWages %>% mutate(value_chg = percent((value/lag(value)-1)),
+                                                cum_value_chg = percent((value/value[1])-1))
+                                
 
 #graph -- need to install scales package for breaks to work
 ggplot(M2, aes(date, value)) +
